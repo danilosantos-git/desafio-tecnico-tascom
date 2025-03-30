@@ -157,7 +157,11 @@ export default function TaskList({
               <TaskForm
                 initialData={task}
                 onSubmit={(data) => {
-                  onEdit({ ...task, ...data });
+                  onEdit({
+                    ...task,
+                    description: data.description,
+                    title: data.title,
+                  });
                   setEditingId(null);
                 }}
               />

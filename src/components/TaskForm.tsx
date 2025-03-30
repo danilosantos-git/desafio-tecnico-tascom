@@ -4,7 +4,7 @@ import { Button, Box, useTheme } from "@mui/material";
 import { Input } from "./Input";
 
 type TaskFormProps = {
-  onSubmit: (data: Omit<Task, "id" | "completed">) => void;
+  onSubmit: (data: Omit<Task, "id" | "isCompleted" | "updatedAt">) => void;
   initialData?: Task;
 };
 
