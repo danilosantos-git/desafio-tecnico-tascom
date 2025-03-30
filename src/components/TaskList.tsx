@@ -4,7 +4,6 @@ import TaskForm from "./TaskForm";
 import {
   List,
   ListItem,
-  ListItemText,
   IconButton,
   Checkbox,
   Typography,
@@ -14,6 +13,7 @@ import {
 } from "@mui/material";
 import { Edit as EditIcon } from "@mui/icons-material";
 import deleteIcon from "../assets/deleteIcon.svg";
+import { format } from "date-fns";
 
 type TaskListProps = {
   tasks: Task[];
@@ -69,7 +69,6 @@ export default function TaskList({
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  // sx={{ position: "absolute", top: 0, right: 0, zIndex: 99 }}
                   aria-label="delete"
                   sx={{ marginLeft: "10px" }}
                   onClick={() => onDelete(task.id)}
@@ -90,20 +89,67 @@ export default function TaskList({
               onChange={() => onToggleComplete(task.id)}
               edge="start"
             />
-            <ListItemText
-              primary={
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+                ml: 2,
+                maxWidth: "calc(100% - 90px)",
+                overflowWrap: "break-word",
+                wordWrap: "break-word",
+                wordBreak: "break-word",
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  textDecoration: task.isCompleted ? "line-through" : "none",
+                  color: task.isCompleted ? "text.secondary" : "text.primary",
+                  mb: 0.5,
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
+                  wordBreak: "break-word",
+                }}
+              >
+                {task.title}
+              </Typography>
+              <Box
+                display={"flex"}
+                sx={{
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "space-between",
+                  gap: 1,
+                }}
+              >
                 <Typography
-                  variant="subtitle1"
+                  variant="body2"
                   sx={{
-                    textDecoration: task.isCompleted ? "line-through" : "none",
-                    color: task.isCompleted ? "text.secondary" : "text.primary",
+                    color: "text.secondary",
+                    mb: { xs: 0.5, sm: 0 },
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                    wordBreak: "break-word",
                   }}
                 >
-                  {task.title}
+                  {task.description}
                 </Typography>
-              }
-              secondary={task.description}
-            />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {format(
+                    new Date(task.updatedAt),
+                    "dd MMMM yyyy 'at' hh:mm a"
+                  )}
+                </Typography>
+              </Box>
+            </Box>
           </ListItem>
           <Collapse in={editingId === task.id}>
             <Box sx={{ p: 2 }}>
