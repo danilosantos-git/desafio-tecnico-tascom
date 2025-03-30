@@ -32,8 +32,11 @@ export default function TaskList({
   return (
     <List sx={{ width: "100%" }}>
       {tasks.map((task) => (
-        <Paper key={task.id} sx={{ mb: 1, overflow: "hidden" }} elevation={1}>
+        <Paper key={task.id} sx={{ mb: 1, overflow: "hidden" }} elevation={0}>
           <ListItem
+            sx={{
+              borderRadius: "10px",
+            }}
             secondaryAction={
               <div>
                 <IconButton
@@ -54,7 +57,7 @@ export default function TaskList({
             }
           >
             <Checkbox
-              checked={task.completed}
+              checked={task.isCompleted}
               onChange={() => onToggleComplete(task.id)}
               edge="start"
             />
@@ -63,8 +66,8 @@ export default function TaskList({
                 <Typography
                   variant="subtitle1"
                   sx={{
-                    textDecoration: task.completed ? "line-through" : "none",
-                    color: task.completed ? "text.secondary" : "text.primary",
+                    textDecoration: task.isCompleted ? "line-through" : "none",
+                    color: task.isCompleted ? "text.secondary" : "text.primary",
                   }}
                 >
                   {task.title}
