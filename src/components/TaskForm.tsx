@@ -71,9 +71,11 @@ export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
         type="submit"
         variant="contained"
         fullWidth
+        disableElevation
         sx={{
           bgcolor: "#ffffff",
           height: "52px",
+          borderRadius: "5px",
         }}
       >
         {btnText}
