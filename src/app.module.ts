@@ -1,18 +1,25 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
-import { Task } from './tasks/entities/task.entity';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      dialect: 'sqlite',
-      storage: 'db.sqlite',
-      models: [Task],
+      dialect: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'postgres',
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: true, // Não use em produção
+      models: [],
     }),
     TasksModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

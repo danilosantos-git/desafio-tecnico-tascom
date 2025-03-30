@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Task } from './entities/task.entity';
+import { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class TasksService {
   ) {}
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.taskModel.create(createTaskDto as any);
+    return this.taskModel.create({ ...createTaskDto });
   }
 
   async findAll(): Promise<Task[]> {
