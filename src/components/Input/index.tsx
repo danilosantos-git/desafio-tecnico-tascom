@@ -8,10 +8,15 @@ interface InputProps extends Omit<TextFieldProps, "variant"> {
   errorMessage?: string;
   register?: UseFormRegister<any>;
   name: string;
+  customBgColor?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, errorMessage, register, name, ...rest }, ref) => {
+  (
+    { label, error, errorMessage, register, name, customBgColor, ...rest },
+    ref
+  ) => {
+    const bgColor = customBgColor || "#474747";
     return (
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Typography
@@ -34,7 +39,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           inputRef={ref}
           sx={{
             "& .MuiOutlinedInput-root": {
-              backgroundColor: "#474747",
+              backgroundColor: bgColor,
               borderRadius: "10px",
               "& fieldset": {
                 borderColor: error ? "error.main" : "transparent",
@@ -47,7 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               },
             },
             "& .MuiInputBase-input": {
-              backgroundColor: "#474747",
+              backgroundColor: bgColor,
               color: "text.primary",
               borderRadius: "10px",
               "&::placeholder": {

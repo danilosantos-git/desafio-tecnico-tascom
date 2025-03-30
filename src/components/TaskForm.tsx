@@ -34,6 +34,7 @@ export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
   };
 
   const btnText = initialData ? "Update Task" : "Create Todo";
+  const bgColor = initialData ? "#3D3D3D" : undefined;
 
   return (
     <Box
@@ -51,6 +52,7 @@ export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
         errorMessage={errors.title?.message}
         placeholder="Enter task name"
         required
+        customBgColor={bgColor}
       />
       <Input
         label="Task Description:"
@@ -62,6 +64,7 @@ export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
         multiline
         rows={3}
         required
+        customBgColor={bgColor}
       />
       <Button
         type="submit"

@@ -12,6 +12,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { taskService } from "./services/api";
+import ChuckMessage from "./components/ChuckMessage";
 
 const darkTheme = createTheme({
   typography: {
@@ -152,9 +153,26 @@ function App() {
                 day
               </Typography>
             </Box>
-            <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-              Wake up, go ahead, do the thing not tomorrow, do today.
-            </Typography>
+            <Box display={"flex"} flexDirection={"row"}>
+              <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+                Wake up, go ahead, do the thing not tomorrow, do
+              </Typography>
+              <Typography
+                ml={0.5}
+                variant="subtitle1"
+                fontWeight={"700"}
+                sx={{ color: "text.secondary" }}
+              >
+                to
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                fontWeight={"275"}
+                sx={{ color: "text.secondary" }}
+              >
+                day.
+              </Typography>
+            </Box>
           </Box>
 
           <Box height={52} sx={{ mb: 2 }}>
@@ -294,18 +312,17 @@ function App() {
               <Typography>Metrics content</Typography>
             </Box>
           )}
+          <ChuckMessage />
         </Container>
-        {/* <Box
+        <Box
           component="footer"
           sx={{
-            py: 3,
-            mt: 3,
             textAlign: "center",
             color: "text.secondary",
           }}
         >
           <Typography variant="body2">@Did from ❤️ by Danilo Santos</Typography>
-        </Box> */}
+        </Box>
       </Box>
     </ThemeProvider>
   );

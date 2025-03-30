@@ -36,6 +36,7 @@ export default function TaskList({
         width: "100%",
         maxHeight: "100%",
         overflowY: "auto",
+        padding: 0,
         msOverflowStyle: "none",
         scrollbarWidth: "none",
         "&::-webkit-scrollbar": {
