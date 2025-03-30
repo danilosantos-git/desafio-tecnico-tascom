@@ -12,7 +12,8 @@ import {
   Collapse,
   Box,
 } from "@mui/material";
-import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import { Edit as EditIcon } from "@mui/icons-material";
+import deleteIcon from "../assets/deleteIcon.svg";
 
 type TaskListProps = {
   tasks: Task[];
@@ -30,15 +31,35 @@ export default function TaskList({
   const [editingId, setEditingId] = useState<string | null>(null);
 
   return (
-    <List sx={{ width: "100%" }}>
-      {tasks.map((task) => (
-        <Paper key={task.id} sx={{ mb: 1, overflow: "hidden" }} elevation={0}>
+    <List
+      sx={{
+        width: "100%",
+        maxHeight: "100%",
+        overflowY: "auto",
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
+    >
+      <Typography variant="h6" fontWeight={"600"} mb={2}>
+        To do
+      </Typography>
+      {tasks.map((task, index) => (
+        <Paper
+          key={index}
+          sx={{
+            mb: 1,
+            overflow: "hidden",
+            position: "relative",
+            borderRadius: "10px",
+          }}
+          elevation={0}
+        >
           <ListItem
-            sx={{
-              borderRadius: "10px",
-            }}
             secondaryAction={
-              <div>
+              <>
                 <IconButton
                   edge="end"
                   aria-label="edit"
@@ -47,13 +68,20 @@ export default function TaskList({
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  edge="end"
+                  // sx={{ position: "absolute", top: 0, right: 0, zIndex: 99 }}
                   aria-label="delete"
+                  sx={{ marginLeft: "10px" }}
                   onClick={() => onDelete(task.id)}
                 >
-                  <DeleteIcon />
+                  <img
+                    src={deleteIcon}
+                    alt="delete"
+                    width={24}
+                    height={24}
+                    style={{ opacity: 0.7 }}
+                  />
                 </IconButton>
-              </div>
+              </>
             }
           >
             <Checkbox

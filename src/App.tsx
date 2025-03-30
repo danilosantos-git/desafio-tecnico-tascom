@@ -76,13 +76,11 @@ function App() {
   const [currentTab, setCurrentTab] = useState(0);
   const queryClient = useQueryClient();
 
-  // Query para buscar as tasks
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks"],
     queryFn: taskService.getTasks,
   });
 
-  // Mutation para criar task
   const createTaskMutation = useMutation({
     mutationFn: taskService.createTask,
     onSuccess: () => {
@@ -90,7 +88,6 @@ function App() {
     },
   });
 
-  // Mutation para atualizar task
   const updateTaskMutation = useMutation({
     mutationFn: taskService.updateTask,
     onSuccess: () => {
@@ -98,7 +95,6 @@ function App() {
     },
   });
 
-  // Mutation para deletar task
   const deleteTaskMutation = useMutation({
     mutationFn: taskService.deleteTask,
     onSuccess: () => {
@@ -226,8 +222,9 @@ function App() {
                 sx={{ flex: "1 1 600px" }}
                 bgcolor={"#3D3D3D"}
                 borderRadius={"10px"}
-                paddingX={3}
+                paddingX={2}
                 paddingY={2}
+                maxHeight={"589px"}
               >
                 {isLoading ? (
                   <Typography>Carregando...</Typography>
@@ -244,31 +241,46 @@ function App() {
               <Box sx={{ flex: "1 1 300px", minWidth: "280px" }}>
                 <Paper
                   sx={{
-                    p: 3,
                     mb: 3,
-                    bgcolor: "background.paper",
+                    pt: "15px",
+                    pb: "20px",
+                    bgcolor: "background.default",
                     borderRadius: 2,
                   }}
                 >
-                  <Typography variant="h4" gutterBottom align="center">
-                    {completedCount.toString().padStart(2, "0")}
-                  </Typography>
                   <Typography
                     variant="subtitle1"
                     align="center"
-                    sx={{ color: "text.secondary" }}
+                    sx={{ color: "text.primary" }}
+                    fontWeight={"600"}
+                    fontSize={"20px"}
                   >
                     Finished tasks quantity
+                  </Typography>
+                  <Typography
+                    align="center"
+                    fontWeight={"600"}
+                    fontSize={"56px"}
+                  >
+                    {completedCount.toString().padStart(2, "0")}
                   </Typography>
                 </Paper>
                 <Paper
                   sx={{
                     p: 3,
-                    bgcolor: "background.paper",
+                    bgcolor: "background.default",
                     borderRadius: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                   }}
                 >
-                  <Typography variant="h6" gutterBottom>
+                  <Typography
+                    fontWeight={"600"}
+                    fontSize={"20px"}
+                    mb={2}
+                    gutterBottom
+                  >
                     Add new to do
                   </Typography>
                   <TaskForm onSubmit={addTask} />
@@ -283,17 +295,17 @@ function App() {
             </Box>
           )}
         </Container>
-        <Box
+        {/* <Box
           component="footer"
           sx={{
             py: 3,
-            mt: 4,
+            mt: 3,
             textAlign: "center",
             color: "text.secondary",
           }}
         >
           <Typography variant="body2">@Did from ❤️ by Danilo Santos</Typography>
-        </Box>
+        </Box> */}
       </Box>
     </ThemeProvider>
   );

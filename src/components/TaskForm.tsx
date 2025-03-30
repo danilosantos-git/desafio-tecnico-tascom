@@ -1,49 +1,79 @@
 import { useForm } from "react-hook-form";
 import { Task } from "../types/Task";
-import { TextField, Button, Box } from "@mui/material";
+import { Button, Box } from "@mui/material";
+import { Input } from "./Input";
 
 type TaskFormProps = {
   onSubmit: (data: Omit<Task, "id" | "completed">) => void;
   initialData?: Task;
 };
 
+type FormInputs = {
+  title: string;
+  description: string;
+};
+
 export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormInputs>({
     defaultValues: initialData || {
       title: "",
       description: "",
     },
   });
 
-  const onSubmitForm = (data: Omit<Task, "id" | "completed">) => {
+  const onSubmitForm = (data: FormInputs) => {
     onSubmit(data);
     if (!initialData) {
       reset();
     }
   };
 
+  const btnText = initialData ? "Update Task" : "Create Todo";
+
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <TextField
-          {...register("title", { required: true })}
-          label="Título"
-          variant="outlined"
-          fullWidth
-          size="small"
-        />
-        <TextField
-          {...register("description", { required: true })}
-          label="Descrição"
-          variant="outlined"
-          multiline
-          rows={3}
-          fullWidth
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          {initialData ? "Atualizar" : "Adicionar"} Tarefa
-        </Button>
-      </Box>
-    </form>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmitForm)}
+      width={"100%"}
+      pb={2}
+      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+    >
+      <Input
+        label="Task Name:"
+        name="title"
+        register={register}
+        error={!!errors.title}
+        errorMessage={errors.title?.message}
+        placeholder="Enter task name"
+        required
+      />
+      <Input
+        label="Task Description:"
+        name="description"
+        register={register}
+        error={!!errors.description}
+        errorMessage={errors.description?.message}
+        placeholder="Enter task description"
+        multiline
+        rows={3}
+        required
+      />
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        sx={{
+          bgcolor: "#ffffff",
+          height: "52px",
+        }}
+      >
+        {btnText}
+      </Button>
+    </Box>
   );
 }
