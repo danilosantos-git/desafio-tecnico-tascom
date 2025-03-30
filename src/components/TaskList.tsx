@@ -136,6 +136,7 @@ export default function TaskList({
                 </Typography>
                 <Typography
                   variant="caption"
+                  minWidth={160}
                   sx={{
                     color: "text.secondary",
                     overflowWrap: "break-word",
