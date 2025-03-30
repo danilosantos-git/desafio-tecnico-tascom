@@ -2,106 +2,28 @@ import { useState } from "react";
 import { Task } from "./types/Task";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
-import { Box, Container, Paper, Typography, Tab, Tabs } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { taskService } from "./services/api";
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Tab,
+  Tabs,
+  useTheme,
+} from "@mui/material";
 import ChuckMessage from "./components/ChuckMessage";
-
-const darkTheme = createTheme({
-  typography: {
-    fontFamily: '"Poppins", sans-serif',
-    h1: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    h2: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    h3: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    h4: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    h5: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    h6: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    subtitle1: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    subtitle2: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    body1: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-    body2: {
-      fontFamily: '"Poppins", sans-serif',
-    },
-  },
-  palette: {
-    mode: "dark",
-    background: {
-      default: "#333333",
-      paper: "#474747",
-    },
-    text: {
-      primary: "#FFFFFF",
-      secondary: "rgba(255, 255, 255, 0.7)",
-    },
-  },
-});
-
-// Criar o cliente do Query
-const queryClient = new QueryClient();
-
-// Wrapper da aplicação com o Provider
-function AppWrapper() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  );
-}
+import { useTaskQuery } from "./hooks/useTaskQuery";
+import { useCreateTaskMutation } from "./hooks/useCreateTaskMutation";
+import { useUpdateTaskMutation } from "./hooks/useUpdateTaskMutation";
+import { useDeleteTaskMutation } from "./hooks/useDeleteTaskMutation";
 
 function App() {
   const [currentTab, setCurrentTab] = useState(0);
-  const queryClient = useQueryClient();
-
-  const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: taskService.getTasks,
-  });
-
-  const createTaskMutation = useMutation({
-    mutationFn: taskService.createTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
-
-  const updateTaskMutation = useMutation({
-    mutationFn: taskService.updateTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
-
-  const deleteTaskMutation = useMutation({
-    mutationFn: taskService.deleteTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
+  const theme = useTheme();
+  const { data: tasks = [], isLoading } = useTaskQuery();
+  const createTaskMutation = useCreateTaskMutation();
+  const updateTaskMutation = useUpdateTaskMutation();
+  const deleteTaskMutation = useDeleteTaskMutation();
 
   const addTask = (task: Omit<Task, "id" | "isCompleted">) => {
     createTaskMutation.mutate(task);
@@ -128,204 +50,190 @@ function App() {
   const completedCount = tasks.filter((task) => task.isCompleted).length;
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Box
-        sx={{
-          bgcolor: "background.default",
-          minHeight: "100vh",
-          color: "text.primary",
-        }}
-      >
-        <Container maxWidth="lg" sx={{ pt: 4 }}>
-          <Box sx={{ mb: 4 }}>
-            <Box display={"flex"} flexDirection={"row"}>
-              <Typography
-                variant="h2"
-                component="h1"
-                sx={{
-                  fontWeight: "600",
-                  mb: 1,
-                }}
-              >
-                To
-              </Typography>
-              <Typography sx={{ fontWeight: 275 }} variant="h2" component="h1">
-                day
-              </Typography>
-            </Box>
-            <Box display={"flex"} flexDirection={"row"}>
-              <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-                Wake up, go ahead, do the thing not tomorrow, do
-              </Typography>
-              <Typography
-                ml={0.5}
-                variant="subtitle1"
-                fontWeight={"700"}
-                sx={{ color: "text.secondary" }}
-              >
-                to
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                fontWeight={"275"}
-                sx={{ color: "text.secondary" }}
-              >
-                day.
-              </Typography>
-            </Box>
+    <Box
+      bgcolor={theme.palette.background.default}
+      minHeight="100vh"
+      color={theme.palette.text.primary}
+    >
+      <Container maxWidth="lg" sx={{ pt: 4 }}>
+        <Box mb={4}>
+          <Box display="flex" flexDirection="row">
+            <Typography variant="h2" fontWeight="600" mb={1}>
+              To
+            </Typography>
+            <Typography variant="h2" fontWeight={275}>
+              day
+            </Typography>
           </Box>
-
-          <Box height={52} sx={{ mb: 2 }}>
-            <Box
-              bgcolor={"#3D3D3D"}
-              display={"inline-flex"}
-              borderRadius={"10px"}
-              padding={1}
+          <Box display="flex" flexDirection="row">
+            <Typography
+              variant="subtitle1"
+              color={theme.palette.text.secondary}
             >
-              <Tabs
-                value={currentTab}
-                onChange={(_, newValue) => setCurrentTab(newValue)}
-                sx={{
-                  minHeight: 36,
-                  "& .MuiTabs-indicator": {
-                    display: "none",
-                  },
-                }}
-              >
-                <Tab
-                  label="Todo"
-                  sx={{
-                    minHeight: 36,
-                    height: 36,
-                    width: 87,
-                    padding: 0,
-                    borderRadius: "10px",
-                    color: "text.secondary",
-                    "&.Mui-selected": {
-                      color: "#FFFFFF",
-                      bgcolor: "#1A1A1A",
-                    },
-                    textTransform: "none",
-                  }}
-                />
-                <Tab
-                  label="Metrics"
-                  sx={{
-                    minHeight: 36,
-                    height: 36,
-                    width: 87,
-                    padding: 0,
-                    borderRadius: "10px",
-                    color: "text.secondary",
-                    "&.Mui-selected": {
-                      color: "#FFFFFF",
-                      bgcolor: "#1A1A1A",
-                    },
-                    textTransform: "none",
-                  }}
-                />
-              </Tabs>
-            </Box>
+              Wake up, go ahead, do the thing not tomorrow, do
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              fontWeight="700"
+              color={theme.palette.text.secondary}
+              ml={0.5}
+            >
+              to
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              fontWeight="275"
+              color={theme.palette.text.secondary}
+            >
+              day.
+            </Typography>
           </Box>
+        </Box>
 
-          {currentTab === 0 && (
-            <Box
+        <Box height={52} mb={2}>
+          <Box
+            bgcolor={theme.palette.background.secondary}
+            display="inline-flex"
+            borderRadius="10px"
+            padding={1}
+          >
+            <Tabs
+              value={currentTab}
+              onChange={(_, newValue) => setCurrentTab(newValue)}
               sx={{
-                display: "flex",
-                gap: 3,
-                flexWrap: "wrap",
+                minHeight: 36,
+                "& .MuiTabs-indicator": {
+                  display: "none",
+                },
               }}
             >
-              <Box
-                sx={{ flex: "1 1 600px" }}
-                bgcolor={"#3D3D3D"}
-                borderRadius={"10px"}
-                paddingX={2}
-                paddingY={2}
-                maxHeight={"589px"}
-              >
-                {isLoading ? (
-                  <Typography>Carregando...</Typography>
-                ) : (
-                  <TaskList
-                    tasks={tasks}
-                    onDelete={deleteTask}
-                    onEdit={editTask}
-                    onToggleComplete={toggleComplete}
-                  />
-                )}
-              </Box>
-
-              <Box sx={{ flex: "1 1 300px", minWidth: "280px" }}>
-                <Paper
-                  sx={{
-                    mb: 3,
-                    pt: "15px",
-                    pb: "20px",
-                    bgcolor: "background.default",
-                    borderRadius: 2,
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    align="center"
-                    sx={{ color: "text.primary" }}
-                    fontWeight={"600"}
-                    fontSize={"20px"}
-                  >
-                    Finished tasks quantity
-                  </Typography>
-                  <Typography
-                    align="center"
-                    fontWeight={"600"}
-                    fontSize={"56px"}
-                  >
-                    {completedCount.toString().padStart(2, "0")}
-                  </Typography>
-                </Paper>
-                <Paper
-                  sx={{
-                    p: 3,
-                    bgcolor: "background.default",
-                    borderRadius: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography
-                    fontWeight={"600"}
-                    fontSize={"20px"}
-                    mb={2}
-                    gutterBottom
-                  >
-                    Add new to do
-                  </Typography>
-                  <TaskForm onSubmit={addTask} />
-                </Paper>
-              </Box>
-            </Box>
-          )}
-
-          {currentTab === 1 && (
-            <Box sx={{ p: 3 }}>
-              <Typography>Metrics content</Typography>
-            </Box>
-          )}
-          <ChuckMessage />
-        </Container>
-        <Box
-          component="footer"
-          sx={{
-            textAlign: "center",
-            color: "text.secondary",
-          }}
-        >
-          <Typography variant="body2">@Did from ❤️ by Danilo Santos</Typography>
+              <Tab
+                label="Todo"
+                color={theme.palette.text.secondary}
+                sx={{
+                  minHeight: 36,
+                  height: 36,
+                  width: 87,
+                  padding: 0,
+                  borderRadius: "10px",
+                  "&.Mui-selected": {
+                    color: theme.palette.text.primary,
+                    bgcolor: theme.palette.background.dark,
+                  },
+                  textTransform: "none",
+                }}
+              />
+              <Tab
+                label="Metrics"
+                color={theme.palette.text.secondary}
+                sx={{
+                  minHeight: 36,
+                  height: 36,
+                  width: 87,
+                  padding: 0,
+                  borderRadius: "10px",
+                  "&.Mui-selected": {
+                    color: theme.palette.text.primary,
+                    bgcolor: theme.palette.background.dark,
+                  },
+                  textTransform: "none",
+                }}
+              />
+            </Tabs>
+          </Box>
         </Box>
+
+        {currentTab === 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+              flexWrap: "wrap",
+            }}
+          >
+            <Box
+              sx={{ flex: "1 1 600px" }}
+              bgcolor={theme.palette.background.secondary}
+              borderRadius={"10px"}
+              paddingX={2}
+              paddingY={2}
+              maxHeight={"589px"}
+            >
+              {isLoading ? (
+                <Typography>Carregando...</Typography>
+              ) : (
+                <TaskList
+                  tasks={tasks}
+                  onDelete={deleteTask}
+                  onEdit={editTask}
+                  onToggleComplete={toggleComplete}
+                />
+              )}
+            </Box>
+
+            <Box sx={{ flex: "1 1 300px", minWidth: "280px" }}>
+              <Paper
+                sx={{
+                  mb: 3,
+                  pt: "15px",
+                  pb: "20px",
+                  bgcolor: theme.palette.background.default,
+                  borderRadius: 2,
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  color={theme.palette.text.primary}
+                  fontWeight="600"
+                  fontSize="20px"
+                >
+                  Finished tasks quantity
+                </Typography>
+                <Typography align="center" fontWeight="600" fontSize="56px">
+                  {completedCount.toString().padStart(2, "0")}
+                </Typography>
+              </Paper>
+              <Paper
+                sx={{
+                  p: 3,
+                  bgcolor: theme.palette.background.default,
+                  borderRadius: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  fontWeight={"600"}
+                  fontSize={"20px"}
+                  mb={2}
+                  gutterBottom
+                >
+                  Add new to do
+                </Typography>
+                <TaskForm onSubmit={addTask} />
+              </Paper>
+            </Box>
+          </Box>
+        )}
+
+        {currentTab === 1 && (
+          <Box p={3}>
+            <Typography>Metrics content</Typography>
+          </Box>
+        )}
+        <ChuckMessage />
+      </Container>
+      <Box
+        component="footer"
+        textAlign="center"
+        color={theme.palette.text.secondary}
+      >
+        <Typography variant="body2">@Did from ❤️ by Danilo Santos</Typography>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 }
 
-export default AppWrapper;
+export default App;

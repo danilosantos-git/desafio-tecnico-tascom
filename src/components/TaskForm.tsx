@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Task } from "../types/Task";
-import { Button, Box } from "@mui/material";
+import { Button, Box, useTheme } from "@mui/material";
 import { Input } from "./Input";
 
 type TaskFormProps = {
@@ -14,6 +14,7 @@ type FormInputs = {
 };
 
 export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
+  const theme = useTheme();
   const {
     register,
     handleSubmit,
@@ -34,7 +35,7 @@ export default function TaskForm({ onSubmit, initialData }: TaskFormProps) {
   };
 
   const btnText = initialData ? "Update Task" : "Create Todo";
-  const bgColor = initialData ? "#3D3D3D" : undefined;
+  const bgColor = initialData ? theme.palette.background.secondary : undefined;
 
   return (
     <Box
